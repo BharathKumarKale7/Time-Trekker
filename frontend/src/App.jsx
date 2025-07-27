@@ -1,16 +1,17 @@
 import './App.css';
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    axios.get("http://localhost:5000/").then(res => setMessage(res.data));
-  }, []);
-
-  return <div className="p-4 text-center">{message}</div>;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
