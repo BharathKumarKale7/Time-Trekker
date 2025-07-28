@@ -11,6 +11,10 @@ app.use(express.json());
 import authRoutes from './routes/auth.js';
 app.use("/api/auth", authRoutes);
 
+import itineraryRoutes from './routes/itinerary.js';
+app.use("/api/itinerary", itineraryRoutes);
+
+
 // MongoDB connection
 const PORT = process.env.PORT || 5000;
 
