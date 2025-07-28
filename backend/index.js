@@ -9,9 +9,13 @@ app.use(cors());
 app.use(express.json());
 
 import authRoutes from './routes/auth.js';
-app.use("/api/auth", authRoutes);
-
+import weatherRoutes from './routes/weather.js';
+import placesRoutes from './routes/places.js';
 import itineraryRoutes from './routes/itinerary.js';
+
+app.use("/api/auth", authRoutes);
+app.use("/api/weather", weatherRoutes);
+app.use("/api/places", placesRoutes);
 app.use("/api/itinerary", itineraryRoutes);
 
 
