@@ -2,11 +2,16 @@
 import express from "express";
 import axios from "axios";
 const router = express.Router();
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 
 router.get("/:city", async (req, res) => {
   const city = req.params.city;
+
+  console.log("Using OpenWeather API Key:", OPENWEATHER_API_KEY); // delete after debug
 
   try {
     const response = await axios.get(

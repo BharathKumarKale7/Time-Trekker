@@ -1,78 +1,59 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccessMsg("");
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", { name, email, password });
-      setSuccessMsg("User created successfully! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000);
+      await api.post("/auth/signup", { email, password });
+      alert("Signup successful! You can now log in.");
+      navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.msg || "Signup failed");
+      alert("Signup failed");
+      console.error(err);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-700 to-blue-900">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create an Account</h2>
-
-        {error && <p className="mb-4 text-red-600">{error}</p>}
-        {successMsg && <p className="mb-4 text-green-600">{successMsg}</p>}
-
-        <label className="block mb-2 font-semibold" htmlFor="name">Name</label>
+    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">Sign Up</h2>
+      <form onSubmit={handleSignup} className="space-y-5">
         <input
-          id="name"
-          type="text"
-          className="w-full p-2 border rounded mb-4"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          minLength={2}
-        />
-
-        <label className="block mb-2 font-semibold" htmlFor="email">Email</label>
-        <input
-          id="email"
           type="email"
-          className="w-full p-2 border rounded mb-4"
+          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="email"
         />
-
-        <label className="block mb-2 font-semibold" htmlFor="password">Password</label>
         <input
-          id="password"
           type="password"
-          className="w-full p-2 border rounded mb-6"
+          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength={6}
+          autoComplete="new-password"
         />
-
-        <button type="submit" className="w-full bg-indigo-600 text-white p-3 rounded hover:bg-indigo-700 transition">
+        <button
+          type="submit"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-md transition"
+        >
           Sign Up
         </button>
-
-        <p className="mt-4 text-center text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 hover:underline">Login</Link>
-        </p>
       </form>
+      <p className="mt-6 text-center text-gray-600 text-sm">
+        Already have an account?{" "}
+        <Link to="/login" className="text-indigo-600 hover:underline font-medium">
+          Login
+        </Link>
+      </p>
     </div>
   );
 }
