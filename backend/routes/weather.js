@@ -25,7 +25,6 @@ router.get("/:city", async (req, res) => {
       weather: response.data.weather[0].main,
       temperature: response.data.main.temp,
       description: response.data.weather[0].description,
-      icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`,
     });
   } catch (err) {
     res.status(500).json({ msg: "Weather fetch failed", error: err.message });
