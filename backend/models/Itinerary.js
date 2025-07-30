@@ -1,4 +1,3 @@
-// models/Itinerary.js
 import mongoose from "mongoose";
 
 const ItinerarySchema = new mongoose.Schema({

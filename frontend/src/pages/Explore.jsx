@@ -32,92 +32,92 @@ function Explore() {
   };
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h1 className="text-2xl font-extrabold mb-6 text-center text-gray-800">
-        Explore Your Destination
-      </h1>
+    <div className="container">
+      <div className="container py-5">
+        <h1 className="text-center text-primary fw-bold mb-4">Explore Your Destination</h1>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <input
-          type="text"
-          placeholder="Enter city"
-          className="border border-gray-300 rounded-md p-3 flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-
-        <input
-          type="number"
-          min={1}
-          max={12}
-          className="border border-gray-300 rounded-md p-3 w-24 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Hours"
-          value={hours}
-          onChange={(e) => setHours(Number(e.target.value))}
-        />
-
-        <button
-          onClick={fetchData}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-6 py-3 font-semibold shadow-md transition-colors duration-200"
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Search"}
-        </button>
-      </div>
-
-      {weather && (
-        <div className="bg-blue-50 p-4 rounded-md mb-6 shadow-sm border border-blue-200">
-          <h2 className="text-lg font-semibold mb-2 text-blue-700">
-            Weather in {weather.city}
-          </h2>
-          <p className="capitalize text-gray-700">{weather.description}</p>
-          <p className="text-2xl font-bold text-blue-800">{weather.temperature}°C</p>
-        </div>
-      )}
-
-      {itinerary.length > 0 && (
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-900">
-            Suggested Itinerary (Next {hours} hr)
-          </h2>
-          <ol className="list-decimal list-inside space-y-2 text-gray-800">
-            {itinerary.map((item, i) => (
-              <li key={i}>
-                <span className="font-semibold">{item.name}</span> — {item.address}
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      {places.length > 0 && (
-        <section>
-          <h2 className="text-lg font-semibold mb-4 text-gray-900">
-            All Recommended Places
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {places.map((place, i) => (
-              <div
-                key={i}
-                className="p-4 rounded-md border border-gray-200 shadow-sm bg-white"
-              >
-                <h3 className="font-semibold text-gray-900">{place.name}</h3>
-                <p className="text-gray-600">{place.address}</p>
-                <p className="mt-1 text-yellow-600">
-                  Rating: {place.rating ?? "N/A"} ⭐ ({place.userRatingsTotal ?? 0} reviews)
-                </p>
-                {place.photo && (
-                  <img
-                    src={place.photo}
-                    alt={place.name}
-                    className="mt-3 rounded-md w-full h-40 object-cover shadow-sm"
-                  />
-                )}
-              </div>
-            ))}
+        <div className="row g-2 align-items-center mb-4">
+          <div className="col-md-5">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
           </div>
-        </section>
-      )}
+          <div className="col-md-2">
+            <input
+              type="number"
+              min={1}
+              max={12}
+              className="form-control"
+              placeholder="Hours"
+              value={hours}
+              onChange={(e) => setHours(Number(e.target.value))}
+            />
+          </div>
+          <div className="col-md-3">
+            <button
+              className="btn btn-primary w-100"
+              onClick={fetchData}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Search"}
+            </button>
+          </div>
+        </div>
+
+        {weather && (
+          <div className="alert alert-info">
+            <h5>Weather in {weather.city}</h5>
+            <p className="mb-1 text-capitalize">{weather.description}</p>
+            <h4>{weather.temperature}°C</h4>
+          </div>
+        )}
+
+        {itinerary.length > 0 && (
+          <div className="mb-4">
+            <h4>Suggested Itinerary (Next {hours} hr)</h4>
+            <ol className="list-group list-group-numbered">
+              {itinerary.map((item, i) => (
+                <li key={i} className="list-group-item">
+                  <strong>{item.name}</strong> — {item.address}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {places.length > 0 && (
+          <div>
+            <h4 className="mb-3">All Recommended Places</h4>
+            <div className="row g-3">
+              {places.map((place, i) => (
+                <div key={i} className="col-md-6">
+                  <div className="card h-100">
+                    <div className="card-body">
+                      <h5 className="card-title">{place.name}</h5>
+                      <p className="card-text">{place.address}</p>
+                      <p className="text-warning mb-0">
+                        Rating: {place.rating ?? "N/A"} ⭐ ({place.userRatingsTotal ?? 0} reviews)
+                      </p>
+                    </div>
+                    {place.photo && (
+                      <img
+                        src={place.photo}
+                        alt={place.name}
+                        className="card-img-bottom img-fluid rounded-bottom"
+                        style={{ maxHeight: "180px", objectFit: "cover" }}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

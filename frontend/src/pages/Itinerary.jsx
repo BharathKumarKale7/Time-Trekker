@@ -24,44 +24,46 @@ function Itinerary() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Save a Custom Itinerary</h1>
-      <input
-        type="text"
-        placeholder="City"
-        className="w-full border p-2 mb-4 rounded"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-      />
+    <div className="container">
+      <div className="container py-5">
+        <h2 className="mb-4 text-primary fw-bold text-center">Save a Custom Itinerary</h2>
+        
+        <div className="mb-3">
+          <label className="form-label">City</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+        </div>
 
-      {places.map((place, idx) => (
-        <input
-          key={idx}
-          type="text"
-          className="w-full border p-2 mb-2 rounded"
-          placeholder={`Place ${idx + 1}`}
-          value={place.name}
-          onChange={(e) => {
-            const newPlaces = [...places];
-            newPlaces[idx].name = e.target.value;
-            setPlaces(newPlaces);
-          }}
-        />
-      ))}
+        <label className="form-label">Places</label>
+        {places.map((place, idx) => (
+          <div key={idx} className="mb-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder={`Place ${idx + 1}`}
+              value={place.name}
+              onChange={(e) => {
+                const newPlaces = [...places];
+                newPlaces[idx].name = e.target.value;
+                setPlaces(newPlaces);
+              }}
+            />
+          </div>
+        ))}
 
-      <div className="flex gap-2">
-        <button
-          onClick={handleAddPlace}
-          className="bg-gray-500 text-white px-4 py-2 rounded"
-        >
-          + Add Place
-        </button>
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Save Itinerary
-        </button>
+        <div className="d-flex gap-2 mt-3">
+          <button onClick={handleAddPlace} className="btn btn-secondary">
+            + Add Place
+          </button>
+          <button onClick={handleSave} className="btn btn-primary">
+            Save Itinerary
+          </button>
+        </div>
       </div>
     </div>
   );

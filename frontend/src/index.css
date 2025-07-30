@@ -1,2 +1,55 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+/* Reset some default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set base font and background */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Images are responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Buttons: ensure they don't shrink on mobile */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Forms: input spacing and style adjustments */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* Anchor defaults */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
