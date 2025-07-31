@@ -13,7 +13,7 @@ function Login() {
     try {
       const res = await api.post("/auth/login", { email, password });
       login(res.data.token);
-      navigate("/dashboard");
+      navigate("/Explore");
     } catch (err) {
       alert("Login failed");
       console.error(err);
@@ -21,8 +21,8 @@ function Login() {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center">
-      <div className="card shadow-lg p-4 rounded-4" style={{ maxWidth: "400px", width: "100%" }}>
+    <div className="fluid-container login-bg-container d-flex align-items-center justify-content-center vh-100">
+      <div className="card shadow-lg p-5 rounded-3" style={{ maxWidth: "400px", width: "100%" }}>
         <h3 className="text-center fw-semibold mb-4">Login</h3>
         <form onSubmit={handleLogin}>
           <div className="form-floating mb-3">
@@ -51,10 +51,10 @@ function Login() {
             />
             <label htmlFor="floatingPassword">Password</label>
           </div>
-          <button type="submit" className="btn btn-primary w-100">Login</button>
+          <button type="submit" className="btn btn-dark w-100">Login</button>
         </form>
         <div className="text-center mt-3">
-          <span>Don't have an account? <Link to="/signup">Sign up</Link></span>
+          <span>Don't have an account? <Link to="/signup" className="text-decoration-none">Sign up</Link></span>
         </div>
       </div>
     </div>

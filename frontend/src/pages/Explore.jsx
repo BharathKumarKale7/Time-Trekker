@@ -32,10 +32,11 @@ function Explore() {
   };
 
   return (
-    <div className="container py-5">
-      <h2 className="text-center text-primary mb-4 fw-bold">Explore Destinations</h2>
+    <div className="container mt-5 p-5">
+      <h2 className="text-center text-dark fw-bold mb-4">Explore Destinations</h2>
 
-      <div className="row justify-content-center mb-5 g-3">
+      {/* Search Inputs */}
+      <div className="row justify-content-center align-items-end g-3 mb-4">
         <div className="col-md-5">
           <input
             type="text"
@@ -58,26 +59,27 @@ function Explore() {
         </div>
         <div className="col-md-3">
           <button
-            className="btn btn-primary w-100"
+            className="btn btn-dark w-100"
             onClick={fetchData}
-            disabled={loading}
-          >
+            disabled={loading}>
             {loading ? "Loading..." : "Search"}
           </button>
         </div>
       </div>
 
+      {/* Weather Info */}
       {weather && (
-        <div className="alert alert-info text-center rounded-3">
+        <div className="alert alert-info text-center rounded-3 mb-4">
           <h5 className="mb-1">Weather in {weather.city}</h5>
           <p className="mb-1 text-capitalize">{weather.description}</p>
           <h4>{weather.temperature}°C</h4>
         </div>
       )}
 
+      {/* Suggested Itinerary */}
       {itinerary.length > 0 && (
         <div className="mb-5">
-          <h4 className="mb-3 text-primary">Suggested Itinerary (Next {hours} hr)</h4>
+          <h4 className="mb-3 text-dark">Suggested Itinerary (Next {hours} hr)</h4>
           <ol className="list-group list-group-numbered">
             {itinerary.map((item, i) => (
               <li key={i} className="list-group-item">
@@ -88,10 +90,11 @@ function Explore() {
         </div>
       )}
 
-      {places.length > 0 && (
+      {/* Recommended Places */}
+      {places.length > 0 ? (
         <div>
-          <h4 className="mb-3 text-primary">All Recommended Places</h4>
-          <div className="row g-4">
+          <h4 className="mb-3 text-dark">All Recommended Places</h4>
+          <div className="row g-4 mb-5">
             {places.map((place, i) => (
               <div key={i} className="col-md-6 col-lg-4">
                 <div className="card h-100 shadow-sm">
@@ -115,12 +118,12 @@ function Explore() {
             ))}
           </div>
         </div>
-      )}
-
-      {places.length === 0 && !loading && (
-        <div className="alert alert-secondary text-center mt-4">
-          Start your search above to explore destinations.
-        </div>
+      ) : (
+        !loading && (
+          <div className="alert alert-secondary text-center mt-4 mb-5">
+            Start your search above to explore destinations.
+          </div>
+        )
       )}
     </div>
   );

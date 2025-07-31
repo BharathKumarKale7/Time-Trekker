@@ -22,9 +22,9 @@ function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white px-3 fixed-top shadow">
       <Link className="navbar-brand fw-bold" to="/">Time Trekker</Link>
-      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -38,7 +38,7 @@ function Navbar() {
                 <Link className="nav-link" to="/explore">Explore</Link>
               </li>
               <li className="nav-item">
-                <button className="btn btn-outline-light ms-2" onClick={handleLogout}>Logout</button>
+                <button className="nav-link" onClick={handleLogout}>Logout</button>
               </li>
             </>
           ) : (

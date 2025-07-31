@@ -26,10 +26,9 @@ function Itinerary() {
   };
 
   return (
-    <div className="container my-5">
-      <h2 className="text-center text-primary fw-bold mb-4">Save a Custom Itinerary</h2>
-
-      <div className="card shadow-sm p-4">
+    <div className="container mt-5 pt-5">
+      <h2 className="text-center text-dark fw-bold mb-4">Save a Custom Itinerary</h2>
+      <div className="card shadow-sm p-4 mb-5">
         <div className="mb-3">
           <label className="form-label fw-semibold">City</label>
           <input
@@ -64,7 +63,7 @@ function Itinerary() {
           <button onClick={handleAddPlace} className="btn btn-outline-secondary">
             + Add Place
           </button>
-          <button onClick={handleSave} className="btn btn-primary">
+          <button onClick={handleSave} className="btn btn-dark">
             Save Itinerary
           </button>
         </div>

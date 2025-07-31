@@ -20,7 +20,7 @@ function Signup() {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
+    <div className="fluid-container signup-bg-container d-flex align-items-center justify-content-center vh-100">
       <div className="card shadow-lg p-4 rounded-4" style={{ maxWidth: "400px", width: "100%" }}>
         <h3 className="text-center fw-semibold mb-4">Sign Up</h3>
         <form onSubmit={handleSignup}>
@@ -50,7 +50,7 @@ function Signup() {
             />
             <label htmlFor="floatingPassword">Password</label>
           </div>
-          <button type="submit" className="btn btn-success w-100">
+          <button type="submit" className="btn btn-dark w-100">
             Sign Up
           </button>
         </form>

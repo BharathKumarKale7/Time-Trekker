@@ -1,27 +1,27 @@
-/* App.css */
 body {
-  background-color: #f8f9fa;
+  background-color: #041b32;
   font-family: 'Segoe UI', sans-serif;
 }
 
-.main-container {
-  padding-top: 5rem;
-  padding-bottom: 3rem;
+.hero {
+  background: linear-gradient(to right, #001f3f, #0074d9);
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Footer Styling */
-.footer {
-  background-color: #343a40;
-  color: #fff;
-  padding: 1.5rem 0;
-  text-align: center;
-  font-size: 0.9rem;
+.hero h1, .hero p {
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
 }
 
-/* Mobile-first base + responsive enhancements */
-@media (min-width: 768px) {
-  .main-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+.signup-bg-container {
+  background-image: url('src/assets/signup-bg.jpg');
+  background-size: cover;
+  
+}
+
+.login-bg-container {
+  background-image: url('src/assets/login-bg.jpg');
+  background-size: cover;
 }

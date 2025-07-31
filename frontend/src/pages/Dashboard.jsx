@@ -39,8 +39,8 @@ function Dashboard() {
   );
 
   return (
-    <div className="container py-5">
-      <h2 className="fw-bold text-primary mb-4 text-center">Your Saved Itineraries</h2>
+    <div className="container mt-5 py-5">
+      <h2 className="fw-bold text-dark mb-4 text-center">Your Saved Itineraries</h2>
 
       {message && (
         <div className="alert alert-success text-center rounded-3">{message}</div>
@@ -76,7 +76,7 @@ function Dashboard() {
                   <div className="mt-auto d-flex justify-content-between align-items-center pt-3">
                     <a
                       href={`https://www.google.com/maps/search/${encodeURIComponent(itin.city)}`}
-                      className="btn btn-outline-primary btn-sm"
+                      className="btn btn-outline-dark btn-sm"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
