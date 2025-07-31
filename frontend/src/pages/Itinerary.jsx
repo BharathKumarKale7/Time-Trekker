@@ -17,6 +17,8 @@ function Itinerary() {
         date: new Date().toISOString(),
       });
       alert("Itinerary saved!");
+      setCity("");
+      setPlaces([{ name: "" }]);
     } catch (err) {
       alert("Failed to save");
       console.error(err);
@@ -24,12 +26,12 @@ function Itinerary() {
   };
 
   return (
-    <div className="container">
-      <div className="container py-5">
-        <h2 className="mb-4 text-primary fw-bold text-center">Save a Custom Itinerary</h2>
-        
+    <div className="container my-5">
+      <h2 className="text-center text-primary fw-bold mb-4">Save a Custom Itinerary</h2>
+
+      <div className="card shadow-sm p-4">
         <div className="mb-3">
-          <label className="form-label">City</label>
+          <label className="form-label fw-semibold">City</label>
           <input
             type="text"
             className="form-control"
@@ -39,25 +41,27 @@ function Itinerary() {
           />
         </div>
 
-        <label className="form-label">Places</label>
-        {places.map((place, idx) => (
-          <div key={idx} className="mb-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder={`Place ${idx + 1}`}
-              value={place.name}
-              onChange={(e) => {
-                const newPlaces = [...places];
-                newPlaces[idx].name = e.target.value;
-                setPlaces(newPlaces);
-              }}
-            />
-          </div>
-        ))}
+        <div className="mb-3">
+          <label className="form-label fw-semibold">Places</label>
+          {places.map((place, idx) => (
+            <div key={idx} className="mb-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder={`Place ${idx + 1}`}
+                value={place.name}
+                onChange={(e) => {
+                  const newPlaces = [...places];
+                  newPlaces[idx].name = e.target.value;
+                  setPlaces(newPlaces);
+                }}
+              />
+            </div>
+          ))}
+        </div>
 
-        <div className="d-flex gap-2 mt-3">
-          <button onClick={handleAddPlace} className="btn btn-secondary">
+        <div className="d-flex flex-wrap gap-2 mt-3">
+          <button onClick={handleAddPlace} className="btn btn-outline-secondary">
             + Add Place
           </button>
           <button onClick={handleSave} className="btn btn-primary">
