@@ -21,8 +21,8 @@ function Signup() {
 
   return (
     <div className="fluid-container signup-bg-container d-flex align-items-center justify-content-center vh-100">
-      <div className="card shadow-lg p-4 rounded-4" style={{ maxWidth: "400px", width: "100%" }}>
-        <h3 className="text-center fw-semibold mb-4">Sign Up</h3>
+      <div className="card bg-transparent border-3 border-light shadow-lg p-5 rounded-4" style={{ maxWidth: "400px", width: "100%" }}>
+        <h3 className="text-center text-light fw-bold mb-4">SIGN UP</h3>
         <form onSubmit={handleSignup}>
           <div className="form-floating mb-3">
             <input
@@ -55,9 +55,9 @@ function Signup() {
           </button>
         </form>
         <div className="text-center mt-3">
-          <span>
+          <span className="fw-semibold">
             Already have an account?{" "}
-            <Link to="/login" className="text-decoration-none">Login</Link>
+            <Link to="/login" className="text-decoration-none text-light">Login</Link>
           </span>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="fluid-container">
+    <div className="fluid-container mt-5">
       <div className="hero text-white d-flex flex-column align-items-center justify-content-center text-center">
         <div>
           <h1 className="display-4 fw-bold">TimeTrekker</h1>

@@ -22,8 +22,8 @@ function Login() {
 
   return (
     <div className="fluid-container login-bg-container d-flex align-items-center justify-content-center vh-100">
-      <div className="card shadow-lg p-5 rounded-3" style={{ maxWidth: "400px", width: "100%" }}>
-        <h3 className="text-center fw-semibold mb-4">Login</h3>
+      <div className="card bg-transparent border-3 border-light shadow-lg p-5 rounded-3" style={{ maxWidth: "400px", width: "100%" }}>
+        <h3 className="text-center text-light fw-bold mb-4">LOGIN</h3>
         <form onSubmit={handleLogin}>
           <div className="form-floating mb-3">
             <input
@@ -54,7 +54,7 @@ function Login() {
           <button type="submit" className="btn btn-dark w-100">Login</button>
         </form>
         <div className="text-center mt-3">
-          <span>Don't have an account? <Link to="/signup" className="text-decoration-none">Sign up</Link></span>
+          <span>Don't have an account? <Link to="/signup" className="text-decoration-none text-light">Sign up</Link></span>
         </div>
       </div>
     </div>
