@@ -2,12 +2,19 @@ import express from "express";
 import axios from "axios";
 const router = express.Router();
 import dotenv from "dotenv";
+import rateLimit from "express-rate-limit";
 dotenv.config();
 
 
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
 
-router.get("/:city", async (req, res) => {
+const externalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // max requests per IP
+  message: { msg: "Too many requests. Please try again later." },
+});
+
+router.get("/:city", externalApiLimiter, async (req, res) => {
   const city = req.params.city;
 
   console.log("Using OpenWeather API Key:", OPENWEATHER_API_KEY); // delete after debug

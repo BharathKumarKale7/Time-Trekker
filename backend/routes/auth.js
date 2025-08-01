@@ -1,50 +1,47 @@
-import express from "express"
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-import authMiddleware from '../middleware/auth.js';
+import express from "express";
+import { body } from "express-validator";
+import authMiddleware from "../middleware/auth.js";
+import {
+  signup,
+  login,
+  getProfile,
+  updateProfile,
+} from "../controllers/authController.js";
+
 const router = express.Router();
 
-
 // Signup
-router.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ msg: "User already exists" });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await User.create({ name, email, password: hashedPassword });
-    res.status(201).json({ msg: "User created" });
-  } catch (err) {
-    res.status(500).json({ msg: "Server error" });
-  }
-});
+router.post(
+  "/signup",
+  [
+    body("email").isEmail().withMessage("Enter a valid email"),
+    body("password")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters")
+      .matches(/[A-Z]/)
+      .withMessage("Must contain at least one uppercase letter")
+      .matches(/[a-z]/)
+      .withMessage("Must contain at least one lowercase letter")
+      .matches(/\d/)
+      .withMessage("Must contain at least one number")
+      .matches(/[!@#$%^&*]/)
+      .withMessage("Must contain at least one special character"),
+  ],
+  signup
+);
 
 // Login
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+router.post("/login", login);
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
+// Get profile
+router.get("/me", authMiddleware, getProfile);
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ msg: "Invalid credentials" });
+// Update profile
+router.put("/me", authMiddleware, updateProfile);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-  } catch (err) {
-    res.status(500).json({ msg: "Server error" });
-  }
-});
-
+// Test secure route
 router.get("/secure-data", authMiddleware, (req, res) => {
   res.json({ msg: "You accessed protected data!", userId: req.user });
 });
 
 export default router;
-

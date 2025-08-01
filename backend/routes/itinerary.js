@@ -15,11 +15,18 @@ router.post("/", auth, async (req, res) => {
       budget,
       interests,
       places,
+      date,
     });
     res.status(201).json(itinerary);
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
   }
 });
+
+router.get("/", auth, async (req, res) => {
+  const itineraries = await Itinerary.find({ user: req.user });
+  res.json(itineraries);
+});
+
 
 export default router;

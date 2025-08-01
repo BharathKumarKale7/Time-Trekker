@@ -5,6 +5,7 @@ const ItinerarySchema = new mongoose.Schema({
   city: String,
   startTime: Date,
   endTime: Date,
+  date: { type: Date },
   budget: Number,
   interests: [String],
   places: [{ name: String, duration: Number, location: String }],

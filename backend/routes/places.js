@@ -1,10 +1,18 @@
 import express from "express";
 import axios from "axios";
+import rateLimit from "express-rate-limit";
 const router = express.Router();
+
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
-router.get("/:city", async (req, res) => {
+const externalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // max requests per IP
+  message: { msg: "Too many requests. Please try again later." },
+});
+
+router.get("/:city", externalApiLimiter, async (req, res) => {
   const city = req.params.city;
   const keyword = req.query.keyword || "tourist attractions";
 

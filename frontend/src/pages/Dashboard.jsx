@@ -19,7 +19,6 @@ function Dashboard() {
     const city = itineraries[index].city;
     if (window.confirm(`Are you sure you want to delete the itinerary for ${city}?`)) {
       try {
-        // Simulate deletion (replace with real API DELETE call if available)
         const updated = itineraries.filter((_, i) => i !== index);
         setItineraries(updated);
         setMessage(`Itinerary for ${city} deleted.`);

@@ -43,7 +43,7 @@ function Itinerary() {
         <div className="mb-3">
           <label className="form-label fw-semibold">Places</label>
           {places.map((place, idx) => (
-            <div key={idx} className="mb-2">
+            <div key={place.name + idx} className="mb-2">
               <input
                 type="text"
                 className="form-control"

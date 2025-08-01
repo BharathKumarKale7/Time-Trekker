@@ -6,8 +6,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Explore from "./pages/Explore";
-import Homepage from "./pages/Home";
+import Homepage from "./components/Home";
 import Itinerary from "./pages/Itinerary";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -15,8 +16,9 @@ function App() {
     <Router>
       <Navbar />
         <Routes>
+          <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Homepage />} />
-          <Route path="/Explore" element={<Explore />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
