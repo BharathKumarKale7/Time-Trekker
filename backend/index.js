@@ -13,11 +13,13 @@ import authRoutes from './routes/auth.js';
 import weatherRoutes from './routes/weather.js';
 import placesRoutes from './routes/places.js';
 import itineraryRoutes from './routes/itinerary.js';
+import distanceRoutes from "./routes/distance.js";
 
 app.use('/api/auth', authRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/places', placesRoutes);
 app.use('/api/itinerary', itineraryRoutes);
+app.use("/api/distance", distanceRoutes);
 
 const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI)

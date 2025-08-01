@@ -31,6 +31,59 @@ function Explore() {
     }
   };
 
+  const fetchNearbyPlaces = () => {
+    if (!navigator.geolocation) {
+      return alert("Geolocation not supported by your browser.");
+    }
+
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await api.get(
+            `/places/recommend?lat=${latitude}&lng=${longitude}&hours=${hours}`
+          );
+
+          setWeather(null); // No weather if city not used
+          setPlaces(res.data.results);
+
+          const planned = generateItinerary(res.data.results, hours);
+          setItinerary(planned);
+        } catch (err) {
+          alert("Failed to fetch nearby places.");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        alert("Failed to get location.");
+        setLoading(false);
+      }
+    );
+  };
+
+  const getDirections = (place) => {
+    if (!navigator.geolocation) {
+      return alert("Geolocation not supported by your browser.");
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const origin = `${position.coords.latitude},${position.coords.longitude}`;
+        const destination = `${place.location.lat},${place.location.lng}`;
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+
+        window.open(googleMapsUrl, "_blank");
+      },
+      () => {
+        alert("Could not get your location for directions.");
+      }
+    );
+  };
+
+
   return (
     <div className="container mt-5 p-5">
       <h2 className="text-center text-dark fw-bold mb-4">Explore Destinations</h2>
@@ -41,7 +94,7 @@ function Explore() {
           <input
             type="text"
             className="form-control"
-            placeholder="Enter city"
+            placeholder="Enter city (or use location)"
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
@@ -57,12 +110,20 @@ function Explore() {
             onChange={(e) => setHours(Number(e.target.value))}
           />
         </div>
-        <div className="col-md-3">
+        <div className="col-md-3 d-flex gap-2">
           <button
-            className="btn btn-dark w-100"
+            className="btn btn-dark w-50"
             onClick={fetchData}
-            disabled={loading}>
-            {loading ? "Loading..." : "Search"}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Search City"}
+          </button>
+          <button
+            className="btn btn-outline-secondary w-50"
+            onClick={fetchNearbyPlaces}
+            disabled={loading}
+          >
+            {loading ? "Locating..." : "Use My Location"}
           </button>
         </div>
       </div>
@@ -79,17 +140,37 @@ function Explore() {
       {/* Suggested Itinerary */}
       {itinerary.length > 0 && (
         <div className="mb-5">
-          <h4 className="mb-3 text-dark">Suggested Itinerary (Next {hours} hr)</h4>
+          <h4 className="mb-3 text-dark">
+            Suggested Itinerary (Next {hours} hr)
+          </h4>
           <ol className="list-group list-group-numbered">
             {itinerary.map((item, i) => (
-              <li key={i} className="list-group-item">
-                <strong>{item.name}</strong> — {item.address}
+              <li key={i} className="list-group-item d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                <div className="flex-grow-1">
+                  <strong>{item.name}</strong> — {item.address}
+                </div>
+
+                {item.photo && (
+                  <img
+                    src={item.photo}
+                    alt={item.name}
+                    className="rounded"
+                    style={{ width: "100px", height: "80px", objectFit: "cover" }}
+                  />
+                )}
+
+                <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() => getDirections(item)}
+                >
+                  Get Directions
+                </button>
               </li>
             ))}
           </ol>
         </div>
       )}
-
+      
       {/* Recommended Places */}
       {places.length > 0 ? (
         <div>
@@ -102,8 +183,19 @@ function Explore() {
                     <h5 className="card-title">{place.name}</h5>
                     <p className="card-text">{place.address}</p>
                     <p className="text-warning mb-0">
-                      Rating: {place.rating ?? "N/A"} ⭐ ({place.userRatingsTotal ?? 0} reviews)
+                      <p className="text-warning mb-1">
+                        Rating: {place.rating ?? "N/A"} ⭐ ({place.userRatingsTotal ?? 0} reviews)
+                      </p>
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => getDirections(place)}
+                      >
+                        Get Directions
+                      </button>
                     </p>
+                    {place.travelTime && (
+                      <p className="text-muted small">Travel Time: {place.travelTime}</p>
+                    )}
                   </div>
                   {place.photo && (
                     <img
