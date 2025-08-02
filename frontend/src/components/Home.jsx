@@ -1,11 +1,41 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { Link } from "react-router-dom";
+import {motion} from "framer-motion";
 
 function Home() {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.2,
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    }),
+  };
+
+  const staggerContainer = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
   return (
     <div className="fluid-container mt-5">
-      <div className="hero text-white d-flex flex-column align-items-center justify-content-center text-center">
-        <div>
+      {/* Hero Section */}
+      <motion.div
+        className="hero text-white d-flex flex-column align-items-center justify-content-center text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <h1 className="display-4 fw-bold">TimeTrekker</h1>
           <p className="lead mb-4">
             Smart, personalized travel itineraries for any stopover or short trip.
@@ -13,59 +43,143 @@ function Home() {
           <Link to="/login" className="btn btn-warning btn-lg">
             Start Exploring
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
+      {/* Why TimeTrekker Section */}
       <section className="py-5 bg-light text-center">
         <div className="container">
-          <h2 className="mb-4 fw-bold">Why TimeTrekker?</h2>
-          <div className="row g-4">
-            <div className="col-md-3">
-              <i className="bi bi-clock-history display-5 text-primary"></i>
-              <h5 className="mt-3">Time-Optimized Plans</h5>
-              <p>Make the most of short durations and layovers efficiently.</p>
-            </div>
-            <div className="col-md-3">
-              <i className="bi bi-cloud-sun display-5 text-info"></i>
-              <h5 className="mt-3">Weather-Aware Suggestions</h5>
-              <p>Smart choices based on real-time weather conditions.</p>
-            </div>
-            <div className="col-md-3">
-              <i className="bi bi-geo-alt display-5 text-danger"></i>
-              <h5 className="mt-3">Nearby Attractions</h5>
-              <p>Get curated lists of the best-rated places around you.</p>
-            </div>
-            <div className="col-md-3">
-              <i className="bi bi-phone display-5 text-success"></i>
-              <h5 className="mt-3">Mobile-Friendly</h5>
-              <p>Plan on the go with a clean, responsive design.</p>
-            </div>
-          </div>
+          <motion.h2
+            className="mb-4 fw-bold"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+          >
+            Why TimeTrekker?
+          </motion.h2>
+          <motion.div
+            className="row g-4"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {[
+              {
+                icon: "bi-clock-history",
+                title: "Time-Optimized Plans",
+                desc: "Make the most of short durations and layovers efficiently.",
+                color: "text-primary",
+              },
+              {
+                icon: "bi-cloud-sun",
+                title: "Weather-Aware Suggestions",
+                desc: "Smart choices based on real-time weather conditions.",
+                color: "text-info",
+              },
+              {
+                icon: "bi-geo-alt",
+                title: "Nearby Attractions",
+                desc: "Get curated lists of the best-rated places around you.",
+                color: "text-danger",
+              },
+              {
+                icon: "bi-phone",
+                title: "Mobile-Friendly",
+                desc: "Plan on the go with a clean, responsive design.",
+                color: "text-success",
+              },
+            ].map((item, i) => (
+              <motion.div
+                className="col-md-3"
+                key={item.title}
+                variants={fadeUp}
+                custom={i + 2}
+              >
+                <i className={`bi ${item.icon} display-5 ${item.color}`}></i>
+                <h5 className="mt-3">{item.title}</h5>
+                <p>{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
+      {/* How It Works */}
       <section className="py-5">
         <div className="container text-center">
-          <h2 className="fw-bold mb-4">How It Works</h2>
-          <div className="row g-5 justify-content-center">
-            <div className="col-md-4">
-              <h5>1. Enter Your City & Hours</h5>
-              <p>Tell us where you are and how much time you have.</p>
-            </div>
-            <div className="col-md-4">
-              <h5>2. View Smart Itinerary</h5>
-              <p>We generate a route based on your interests, distance, and time.</p>
-            </div>
-            <div className="col-md-4">
-              <h5>3. Explore & Enjoy</h5>
-              <p>Follow the personalized plan and make the most of your time.</p>
-            </div>
-          </div>
-          <Link to="/login" className="btn btn-dark mt-4 mb-5">
-            Plan My Trip
-          </Link>
+          <motion.h2
+            className="fw-bold mb-4"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+          >
+            How It Works
+          </motion.h2>
+          <motion.div
+            className="row g-5 justify-content-center"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {[
+              {
+                title: "1. Enter Your City & Hours",
+                desc: "Tell us where you are and how much time you have.",
+              },
+              {
+                title: "2. View Smart Itinerary",
+                desc: "We generate a route based on your interests, distance, and time.",
+              },
+              {
+                title: "3. Explore & Enjoy",
+                desc: "Follow the personalized plan and make the most of your time.",
+              },
+            ].map((step, i) => (
+              <motion.div
+                className="col-md-4"
+                key={step.title}
+                variants={fadeUp}
+                custom={i + 2}
+              >
+                <h5>{step.title}</h5>
+                <p>{step.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
+
+      {/* CTA Section */}
+      <motion.section
+        className="py-5 bg-dark text-white text-center mb-5"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+      >
+        <div className="container">
+          <motion.h2 className="mb-4" variants={fadeUp} initial="hidden" animate="visible">
+            Ready to Discover More on Every Trip?
+          </motion.h2>
+          <motion.p
+            className="lead mb-4"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+          >
+            Join thousands of smart travelers using TimeTrekker to make the most of their journeys.
+          </motion.p>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={2}>
+            <Link to="/login" className="btn btn-light btn-lg">
+              <i className="bi bi-rocket-takeoff me-2"></i>
+              Start Free Now
+            </Link>
+          </motion.div>
+        </div>
+      </motion.section>
     </div>
   );
 }
