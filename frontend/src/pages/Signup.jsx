@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
@@ -104,7 +104,7 @@ function Signup() {
                 left: "18rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#6c757d",
+                color: "#f0ad4e",
               }}
             />
           </div>
@@ -127,7 +127,7 @@ function Signup() {
                 left: "18rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#6c757d",
+                color: "#f0ad4e",
               }}
             />
           </div>
@@ -150,7 +150,7 @@ function Signup() {
                 left: "18rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#6c757d",
+                color: "#f0ad4e",
               }}
             />
           </div>

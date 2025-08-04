@@ -1,23 +1,42 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from "../services/api";
 
 function Itinerary() {
   const [city, setCity] = useState("");
   const [places, setPlaces] = useState([{ name: "" }]);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   const handleAddPlace = () => {
     setPlaces([...places, { name: "" }]);
   };
 
   const handleSave = async () => {
+    // Basic validation
+    if (
+      !city.trim() ||
+      !startTime.trim() ||
+      !endTime.trim() ||
+      places.some((p) => !p.name.trim())
+    ) {
+      alert(
+        "Please fill in all fields: city, start time, end time, and all place names."
+      );
+      return;
+    }
+
     try {
       await api.post("/itinerary", {
         city,
         places,
+        startTime,
+        endTime,
         date: new Date().toISOString(),
       });
       alert("Itinerary saved!");
       setCity("");
+      setStartTime("");
+      setEndTime("");
       setPlaces([{ name: "" }]);
     } catch (err) {
       alert("Failed to save");
@@ -37,6 +56,27 @@ function Itinerary() {
             placeholder="Enter city"
             value={city}
             onChange={(e) => setCity(e.target.value)}
+          />
+        </div>
+
+        {/* New inputs for startTime and endTime */}
+        <div className="mb-3">
+          <label className="form-label fw-semibold">Start Time</label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label fw-semibold">End Time</label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
           />
         </div>
 

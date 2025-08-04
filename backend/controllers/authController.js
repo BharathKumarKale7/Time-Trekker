@@ -20,6 +20,7 @@ export const signup = async (req, res) => {
 
     res.status(201).json({ msg: "User created" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: "Server error" });
   }
 };
@@ -44,28 +45,41 @@ export const login = async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: "Server error" });
   }
 };
 
 // Get Profile
 export const getProfile = async (req, res) => {
-  const user = await User.findById(req.user).select("-password");
-  res.json(user);
+  try {
+    const userId = req.user;
+    const user = await User.findById(userId).select("-password");
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+  }
 };
 
 // Update Profile
 export const updateProfile = async (req, res) => {
   const { name, email } = req.body;
   try {
+    const userId = req.user;
     const updated = await User.findByIdAndUpdate(
-      req.user,
+      userId,
       { name, email },
       { new: true, runValidators: true }
     ).select("-password");
 
+    if (!updated) return res.status(404).json({ msg: "User not found" });
+
     res.json(updated);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: "Error updating profile" });
   }
 };

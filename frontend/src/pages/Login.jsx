@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../utils/auth";
@@ -63,7 +63,7 @@ function Login() {
                 left: "18rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#6c757d",
+                color: "#f0ad4e",
               }}
             />
           </div>
@@ -86,7 +86,7 @@ function Login() {
                 left: "18rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#6c757d",
+                color: "#f0ad4e",
               }}
             />
           </div>
