@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../utils/auth";
+import authEvent from "../utils/authEvent";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,6 +19,8 @@ function Login() {
     try {
       const res = await api.post("/auth/login", { email, password });
       login(res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      authEvent.emit();
       navigate("/Explore");
     } catch (err) {
       alert("Login failed");

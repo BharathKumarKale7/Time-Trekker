@@ -7,7 +7,6 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Explore from "./pages/Explore";
 import Homepage from "./components/Home";
-import Itinerary from "./pages/Itinerary";
 import Profile from "./pages/Profile";
 
 
@@ -22,7 +21,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/itinerary" element={<Itinerary />} />
         </Routes>
       <Footer />
     </Router>

@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import authEvent from "../utils/authEvent";
 import { generateItinerary } from "../utils/itinerary";
 import { motion } from "framer-motion";
 import { isLoggedIn } from "../utils/auth";
+import { redirect } from "react-router-dom";
 
 function Explore() {
   const [city, setCity] = useState("");
@@ -16,6 +18,7 @@ function Explore() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
   const [auth, setAuth] = useState(isLoggedIn());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onAuthChange = () => {
@@ -102,6 +105,7 @@ function Explore() {
         places: itinerary,
       });
       setSaveSuccess(true);
+      navigate("/dashboard");
     } catch (err) {
       alert("Failed to save itinerary");
       console.error(err);
@@ -145,7 +149,7 @@ function Explore() {
           </div>
           <div className="col-md-5 d-flex gap-2">
             <button
-              className="btn btn-primary flex-fill"
+              className="btn btn-dark flex-fill"
               onClick={fetchData}
               disabled={loading}
             >
@@ -175,7 +179,7 @@ function Explore() {
       {auth && itinerary.length > 0 && (
         <div className="d-flex justify-content-end mb-3">
           <button
-            className="btn btn-success"
+            className="btn btn-dark"
             onClick={handleSaveItinerary}
             disabled={saving}
           >

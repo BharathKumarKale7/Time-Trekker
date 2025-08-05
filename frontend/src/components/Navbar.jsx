@@ -1,18 +1,22 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { isLoggedIn, logout } from "../utils/auth";
+import { isLoggedIn, logout,getUsername } from "../utils/auth";
 import authEvent from "../utils/authEvent";
 import { motion } from "framer-motion";
 
 function Navbar() {
   const [auth, setAuth] = useState(isLoggedIn());
+  const [username,setUsername] = useState(getUsername());
   const navigate = useNavigate();
   const location = useLocation();
   const navbarRef = useRef(null);
 
   useEffect(() => {
-    const updateAuth = () => setAuth(isLoggedIn());
+    const updateAuth = () => 
+      {setAuth(isLoggedIn());
+      setUsername(getUsername());
+      };
     authEvent.subscribe(updateAuth);
     return () => authEvent.unsubscribe(updateAuth);
   }, []);
@@ -38,6 +42,8 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
+    authEvent.emit();
     logout();
     collapseNavbar();
     navigate("/login");
@@ -68,7 +74,7 @@ function Navbar() {
       ref={navbarRef}
     >
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand fw-bold text-dark" onClick={collapseNavbar}>
+       <Link to={auth ? "/dashboard" : "/"} className="navbar-brand fw-bold text-dark" onClick={collapseNavbar}>
           <i
               className="bi bi-globe-central-south-asia-fill me-2"
               style={{
@@ -97,6 +103,16 @@ function Navbar() {
           <ul className="navbar-nav align-items-center">
             {auth ? (
               <>
+                <li className="nav-item mx-2">
+                  <Link
+                    className={`nav-link ${isActive("/profile") ? "fw-semibold text-warning" : "text-dark"}`}
+                    to="/profile"
+                    onClick={collapseNavbar}
+                  >
+                    <i className="bi bi-person-circle me-2" />
+                    <span className="fw-semibold">{username || "User"}</span>
+                  </Link>
+                </li>
                 <li className="nav-item mx-2">
                   <Link
                     className={`nav-link ${isActive("/dashboard") ? "fw-semibold text-warning" : "text-dark"}`}
