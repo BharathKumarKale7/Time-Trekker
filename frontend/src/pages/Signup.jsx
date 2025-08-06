@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import { toast } from "react-toastify";
 
 function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -42,7 +43,7 @@ function Signup() {
 
     try {
       await api.post("/auth/signup", form);
-      alert("Signup successful! Please log in.");
+      toast.success("Signup successful! Please log in.");
       navigate("/login");
     } catch (err) {
       if (err.response?.data?.errors) {

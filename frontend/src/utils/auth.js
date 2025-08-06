@@ -16,10 +16,8 @@ export function isLoggedIn() {
 
 export function getUsername() {
   try {
-    const userStr = localStorage.getItem("user");
-    if (!userStr) return null;
-    const user = JSON.parse(userStr);
-    return user?.name || null;
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    return user?.name || "User";
   } catch (err) {
     console.error("Error parsing user from localStorage:", err);
     return null;

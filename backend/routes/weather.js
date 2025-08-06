@@ -17,8 +17,6 @@ const externalApiLimiter = rateLimit({
 router.get("/:city", externalApiLimiter, async (req, res) => {
   const city = req.params.city;
 
-  console.log("Using OpenWeather API Key:", OPENWEATHER_API_KEY); // delete after debug
-
   try {
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/weather`,

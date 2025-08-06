@@ -6,7 +6,7 @@ export default function (req, res, next) {
     return res.status(401).json({ msg: "No token, authorization denied" });
   }
 
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1] || req.cookies?.token;
   if (!token) return res.status(401).json({ msg: "No token, authorization denied" });
 
   try {

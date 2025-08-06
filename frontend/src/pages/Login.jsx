@@ -3,6 +3,8 @@ import api from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../utils/auth";
 import authEvent from "../utils/authEvent";
+import { toast } from "react-toastify";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -23,7 +25,7 @@ function Login() {
       authEvent.emit();
       navigate("/Explore");
     } catch (err) {
-      alert("Login failed");
+      toast.error("Login failed");
       console.error(err);
     }
   };

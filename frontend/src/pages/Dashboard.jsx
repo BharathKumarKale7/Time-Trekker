@@ -4,6 +4,7 @@ import api from "../services/api";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 const UNSPLASH_ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
@@ -61,11 +62,11 @@ function Dashboard() {
         await api.delete(`/itinerary/${id}`);
         const updated = itineraries.filter((_, i) => i !== index);
         setItineraries(updated);
-        setMessage(`Itinerary for ${city} deleted.`);
+        toast.info(`Itinerary for ${city} deleted.`);
         setTimeout(() => setMessage(null), 3000);
       } catch (err) {
         console.error("Failed to delete itinerary", err);
-        alert("Deletion failed.");
+        toast.error("Deletion failed.");
       }
     }
   };

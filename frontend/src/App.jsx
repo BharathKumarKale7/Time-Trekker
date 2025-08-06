@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
@@ -8,22 +8,26 @@ import Dashboard from "./pages/Dashboard";
 import Explore from "./pages/Explore";
 import Homepage from "./components/Home";
 import Profile from "./pages/Profile";
+import Events from "./pages/Events";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
-        <Routes>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/" element={<Homepage />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<PublicRoute><Homepage /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/explore" element={<PrivateRoute><Explore /></PrivateRoute>} />
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/events" element={<PrivateRoute><Events /></PrivateRoute>} />
+      </Routes>
       <Footer />
-    </Router>
+    </>
   );
 }
 

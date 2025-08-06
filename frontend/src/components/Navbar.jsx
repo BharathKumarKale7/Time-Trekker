@@ -1,22 +1,22 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { isLoggedIn, logout,getUsername } from "../utils/auth";
+import { isLoggedIn, logout, getUsername } from "../utils/auth";
 import authEvent from "../utils/authEvent";
 import { motion } from "framer-motion";
 
 function Navbar() {
   const [auth, setAuth] = useState(isLoggedIn());
-  const [username,setUsername] = useState(getUsername());
+  const [username, setUsername] = useState(getUsername());
   const navigate = useNavigate();
   const location = useLocation();
   const navbarRef = useRef(null);
 
   useEffect(() => {
-    const updateAuth = () => 
-      {setAuth(isLoggedIn());
+    const updateAuth = () => {
+      setAuth(isLoggedIn());
       setUsername(getUsername());
-      };
+    };
     authEvent.subscribe(updateAuth);
     return () => authEvent.unsubscribe(updateAuth);
   }, []);
@@ -31,9 +31,9 @@ function Navbar() {
         isExpanded &&
         navbarCollapse &&
         !navbarCollapse.contains(event.target) &&
-        !toggler.contains(event.target)
+        !toggler?.contains(event.target)
       ) {
-        toggler.click(); // simulate a click to collapse
+        toggler?.click(); // collapse navbar
       }
     };
 
@@ -74,15 +74,15 @@ function Navbar() {
       ref={navbarRef}
     >
       <div className="container-fluid">
-       <Link to={auth ? "/dashboard" : "/"} className="navbar-brand fw-bold text-dark" onClick={collapseNavbar}>
+        <Link to={auth ? "/dashboard" : "/"} className="navbar-brand fw-bold text-dark" onClick={collapseNavbar}>
           <i
-              className="bi bi-globe-central-south-asia-fill me-2"
-              style={{
-                left: "1rem",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#f0ad4e",
-              }}
+            className="bi bi-globe-central-south-asia-fill me-2"
+            style={{
+              left: "1rem",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#f0ad4e",
+            }}
           />
           Time<span style={{ color: "#f0ad4e" }}>Trekker</span>
         </Link>
@@ -110,7 +110,7 @@ function Navbar() {
                     onClick={collapseNavbar}
                   >
                     <i className="bi bi-person-circle me-2" />
-                    <span className="fw-semibold">{username || "User"}</span>
+                    <span className="fw-semibold">{username}</span>
                   </Link>
                 </li>
                 <li className="nav-item mx-2">
@@ -132,9 +132,14 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item mx-2">
+                  <Link to="/events" className="nav-link text-dark">
+                    Events
+                  </Link>
+                </li>
+                <li className="nav-item mx-2">
                   <motion.button
                     onClick={handleLogout}
-                    className="nav-link fw-semibold text-dark"
+                    className="nav-link fw-semibold text-dark bg-transparent border-0"
                     whileTap={{ scale: 0.95 }}
                   >
                     Logout
@@ -153,11 +158,11 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item mx-2">
-                  <Link 
+                  <Link
                     className={`nav-link ${isActive("/signup") ? "fw-semibold text-warning" : "text-dark"}`}
                     to="/signup"
                     onClick={collapseNavbar}
-                  >  
+                  >
                     Signup
                   </Link>
                 </li>
