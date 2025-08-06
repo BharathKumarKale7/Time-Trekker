@@ -19,9 +19,9 @@ import authRoutes from "./routes/auth.js";
 import weatherRoutes from "./routes/weather.js";
 import placesRoutes from "./routes/places.js";
 import itineraryRoutes from "./routes/itinerary.js";
-import eventsRouter from "./routes/events.js";
+import eventsRoutes from "./routes/events.js";
 
-app.use("/api/events", eventsRouter);
+app.use("/api/events", eventsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/weather", weatherRoutes);
 app.use("/api/places", placesRoutes);

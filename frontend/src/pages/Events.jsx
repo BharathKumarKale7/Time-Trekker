@@ -2,113 +2,92 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import { format } from "date-fns";
-import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 function Events() {
   const [events, setEvents] = useState([]);
-  const [searchCity, setSearchCity] = useState("");
+  const [city, setCity] = useState();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchByCity("London"); // default
-  }, []);
-
-  const fetchByCity = async city => {
+  const fetchEvents = async () => {
     if (!city) return;
     setLoading(true);
-    setError("");
     try {
       const res = await api.get("/events", { params: { city } });
       setEvents(res.data);
     } catch (err) {
-      console.error(err);
-      setError("Failed to load events by city");
+      console.error("Failed to fetch events:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchByLocation = () => {
-    if (!navigator.geolocation) return toast.error("Geolocation unsupported");
-    setLoading(true);
-    setError("");
-    navigator.geolocation.getCurrentPosition(
-      async pos => {
-        try {
-          const { latitude: lat, longitude: lng } = pos.coords;
-          const res = await api.get("/events", { params: { lat, lng } });
-          setEvents(res.data);
-        } catch (err) {
-          console.error(err);
-          setError("Failed to load events by location");
-        } finally {
-          setLoading(false);
-        }
-      },
-      err => {
-        setLoading(false);
-        toast.error("Could not fetch location");
-      }
-    );
-  };
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return (
-    <div className="container mt-5 py-5">
-      <h2 className="text-center mb-4">Events & Festivals</h2>
-      <div className="row mb-4 align-items-end">
-        <div className="col-md-6">
-          <label>Search by City</label>
+    <div className="container mt-5 py-5 mb-5">
+      <h2 className="mb-4 text-center fw-bold">🎭 Upcoming Events in {city}</h2>
+
+      <div className="row mb-4">
+        <div className="col-md-8 mb-3">
           <input
             className="form-control"
-            placeholder="e.g. Tokyo"
-            value={searchCity}
-            onChange={e => setSearchCity(e.target.value)}
+            placeholder="Enter city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
           />
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <button
-            className="btn btn-primary w-100"
-            onClick={() => fetchByCity(searchCity)}
+            className="btn btn-dark w-100"
+            onClick={fetchEvents}
             disabled={loading}
           >
-            Search City
-          </button>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="btn btn-outline-secondary w-100"
-            onClick={fetchByLocation}
-            disabled={loading}
-          >
-            Use My Location
+            {loading ? "Loading..." : "Search Events"}
           </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-center">Loading events...</div>
-      ) : error ? (
-        <div className="alert alert-danger">{error}</div>
+        <p className="text-center">Loading events...</p>
       ) : events.length === 0 ? (
-        <div className="alert alert-info">No events found.</div>
+        <p className="text-center">No events found for this city.</p>
       ) : (
         <div className="row g-4">
-          {events.map(evt => (
-            <div className="col-md-6 col-lg-4" key={evt.id}>
+          {events.map((evt) => (
+            <motion.div
+              key={evt.id}
+              className="col-md-6 col-lg-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="card h-100 shadow-sm">
-                {evt.image && <img src={evt.image} alt={evt.name} className="card-img-top" />}
-                <div className="card-body">
-                  <h5>{evt.name}</h5>
-                  <p className="text-muted">{evt.city}</p>
-                  <p><i className="bi bi-calendar-event me-1" />{format(new Date(evt.date), "PPP")}</p>
-                  <p className="small mb-3">{evt.description}</p>
-                  <a href={evt.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
-                    View Details
+                {evt.image && (
+                  <img
+                    src={evt.image}
+                    alt={evt.name}
+                    className="card-img-top"
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
+                )}
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{evt.name}</h5>
+                  <p className="mb-1 text-muted">{evt.venue}, {evt.city}</p>
+                  <p className="mb-2 small">📅 {format(new Date(evt.date), "PP")} ⏰ {evt.time || "N/A"}</p>
+                  <a
+                    href={evt.url}
+                    className="btn btn-sm btn-outline-primary mt-auto"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Details →
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}

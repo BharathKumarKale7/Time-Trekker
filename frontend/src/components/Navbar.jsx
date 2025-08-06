@@ -132,7 +132,11 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item mx-2">
-                  <Link to="/events" className="nav-link text-dark">
+                  <Link
+                    className={`nav-link ${isActive("/events") ? "fw-semibold text-warning" : "text-dark"}`}
+                    to="/events"
+                    onClick={collapseNavbar}
+                  >
                     Events
                   </Link>
                 </li>
