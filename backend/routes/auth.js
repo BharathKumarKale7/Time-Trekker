@@ -1,30 +1,28 @@
 import express from "express";
 import authMiddleware from "../middleware/auth.js";
-import {
-  signup,
-  login,
-  getProfile,
-  updateProfile,
-} from "../controllers/authController.js";
+import { signup, login } from "../controllers/authController.js";
+import { getProfile, updateProfile, uploadUserImages} from "../controllers/profileController.js";
 import { validateSignup } from "../validators/authValidator.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-// Signup
+// ===== AUTH ROUTES =====
 router.post("/signup", validateSignup, signup);
-
-// Login
 router.post("/login", login);
 
-// Get profile
+// ===== PROFILE ROUTES =====
 router.get("/me", authMiddleware, getProfile);
-
-// Update profile
 router.put("/me", authMiddleware, updateProfile);
+router.post(
+  "/upload-images",
+  authMiddleware,
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 }
+  ]),
+  uploadUserImages
+);
 
-// Test secure route
-router.get("/secure-data", authMiddleware, (req, res) => {
-  res.json({ msg: "You accessed protected data!", userId: req.user });
-});
 
 export default router;

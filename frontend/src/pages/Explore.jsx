@@ -6,7 +6,6 @@ import authEvent from "../utils/authEvent";
 import { generateItinerary } from "../utils/itinerary";
 import { motion } from "framer-motion";
 import { isLoggedIn } from "../utils/auth";
-import { redirect } from "react-router-dom";
 
 function Explore() {
   const [city, setCity] = useState("");
