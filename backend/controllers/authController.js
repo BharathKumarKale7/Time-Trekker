@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs"; // For password hashing
 import jwt from "jsonwebtoken"; // For generating authentication tokens
 import User from "../models/userModel.js"; // User model
 import { validationResult } from "express-validator"; // For request validation
-import crypto from "crypto";
-import nodemailer from "nodemailer";
+import crypto from "crypto"; // For generating secure random values
+import sendEmail from "../utils/sendEmail.js"; // Utility to send emails
 
 // Signup Controller
 export const signup = async (req, res, next) => {
@@ -80,79 +80,129 @@ export const login = async (req, res, next) => {
 };
 
 // Forgot Password Controller
-export const forgotPassword = async (req, res, next) => {
-  const { email } = req.body;
+const OTP_LENGTH = 6;
+const OTP_EXPIRE_MS = 10 * 60 * 1000; // 10 minutes
+const MAX_OTP_ATTEMPTS = 5;            // after this, lock for LOCK_DURATION_MS
+const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes lockout
 
+// Helper: generate 6-digit OTP as string
+const generateOTP = (len = OTP_LENGTH) => {
+  const min = Math.pow(10, len - 1);
+  const num = Math.floor(min + Math.random() * 9 * min);
+  return String(num);
+};
+
+// 1) Request OTP endpoint
+export const requestPasswordOTP = async (req, res, next) => {
   try {
-     const user = await User.findOne({ email });
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ msg: "Email is required" });
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
-      return res.status(400).json({ msg: "No account with that email" });
+      // Do not reveal whether email exists — respond success to avoid enumeration
+      return res.json({ msg: "If an account exists for that email, an OTP has been sent." });
     }
 
-    // Create reset token
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenHash = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
+    // throttle per email: require min interval between OTPs (e.g., 2 minutes)
+    const MIN_OTP_INTERVAL_MS = 2 * 60 * 1000;
+    if (user.resetOTPExpire && (user.resetOTPExpire - OTP_EXPIRE_MS + MIN_OTP_INTERVAL_MS) > Date.now()) {
+      return res.status(429).json({ msg: "OTP already sent recently. Please wait and try again." });
+    }
 
-    // Store token & expiry in user doc
-    user.resetPasswordToken = resetTokenHash;
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 min
+    // If user currently locked from previous failed attempts
+    if (user.resetOTPLockedUntil && user.resetOTPLockedUntil > Date.now()) {
+      return res.status(429).json({ msg: "Too many attempts. Try again later." });
+    }
+
+    const otp = generateOTP();
+    const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
+
+    user.resetOTP = hashedOTP;
+    user.resetOTPExpire = Date.now() + OTP_EXPIRE_MS;
+    user.resetOTPAttempts = 0;
+    user.resetOTPLockedUntil = undefined;
+
     await user.save();
 
-    // Send email
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // or your SMTP service
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Send out email
+    const html = `
+      <p>Hello ${user.name || ""},</p>
+      <p>Your password reset code is:</p>
+      <h2 style="letter-spacing:6px">${otp}</h2>
+      <p>This code is valid for ${Math.floor(OTP_EXPIRE_MS / 60000)} minutes.</p>
+      <p>If you didn't request this, ignore this email.</p>
+    `;
+    await sendEmail({ to: user.email, subject: "Your password reset code", html });
 
-    await transporter.sendMail({
-      to: user.email,
-      subject: "Password Reset Request",
-      html: `<p>You requested a password reset.</p>
-             <p>Click <a href="${resetUrl}">here</a> to reset your password.</p>
-             <p>This link is valid for 15 minutes.</p>`,
-    });
-
-    res.json({ msg: "Password reset email sent" });
+    // Generic success message to prevent enumeration
+    return res.json({ msg: "If an account exists for that email, an OTP has been sent." });
   } catch (err) {
     next(err);
   }
 };
 
-// RESET PASSWORD
-export const resetPassword = async (req, res, next) => {
-  const { password } = req.body;
-  const { token } = req.params;
-
+// 2) Reset password with OTP
+export const resetPasswordWithOTP = async (req, res, next) => {
   try {
-    // Hash token to match stored hash
-    const resetTokenHash = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
-
-    const user = await User.findOne({
-      resetPasswordToken: resetTokenHash,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res.status(400).json({ msg: "Invalid or expired token" });
+    // Basic request validation
+    const { email, otp, password } = req.body;
+    if (!email || !otp || !password) {
+      return res.status(400).json({ msg: "Email, OTP and new password are required." });
     }
 
-    // Update password
-    user.password = await bcrypt.hash(password, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    // Password policy: adjust as desired
+    const pwRe = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+/;
+    if (!pwRe.test(password)) {
+      return res.status(400).json({ msg: "Password must be at least 8 characters, include upper and lower case letters and a number." });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) return res.status(400).json({ msg: "Invalid OTP or expired." });
+
+    // Check lockout
+    if (user.resetOTPLockedUntil && user.resetOTPLockedUntil > Date.now()) {
+      return res.status(429).json({ msg: "Too many failed attempts — try again later." });
+    }
+
+    if (!user.resetOTP || !user.resetOTPExpire || user.resetOTPExpire < Date.now()) {
+      return res.status(400).json({ msg: "Invalid or expired OTP." });
+    }
+
+    const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
+
+    // Safe comparison (hash strings)
+    if (hashedOTP !== user.resetOTP) {
+      // increment attempt counter
+      user.resetOTPAttempts = (user.resetOTPAttempts || 0) + 1;
+      if (user.resetOTPAttempts >= MAX_OTP_ATTEMPTS) {
+        user.resetOTPLockedUntil = Date.now() + LOCK_DURATION_MS;
+        await user.save();
+        return res.status(429).json({ msg: "Too many failed attempts. You are temporarily locked out." });
+      }
+      await user.save();
+      return res.status(400).json({ msg: "Invalid OTP." });
+    }
+
+    // OTP valid -> update password
+    const hashedPassword = await bcrypt.hash(password, 12); // 12 salt rounds
+    user.password = hashedPassword;
+    // clear OTP fields and counters
+    user.resetOTP = undefined;
+    user.resetOTPExpire = undefined;
+    user.resetOTPAttempts = 0;
+    user.resetOTPLockedUntil = undefined;
+
     await user.save();
 
-    res.json({ msg: "Password reset successful" });
+    //send confirmation email
+    await sendEmail({
+      to: user.email,
+      subject: "Your password was changed",
+      html: `<p>Your password was changed successfully. If you didn't perform this action, contact support immediately.</p>`
+    });
+
+    return res.json({ msg: "Password updated successfully" });
   } catch (err) {
     next(err);
   }

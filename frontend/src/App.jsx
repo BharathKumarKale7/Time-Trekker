@@ -10,7 +10,7 @@ import Homepage from "./pages/Home";
 import Profile from "./pages/Profile";
 import Events from './pages/Events';
 import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import ResetWithOTP from './pages/ResetWithOtp';
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 
@@ -28,7 +28,7 @@ function App() {
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/events" element={<PrivateRoute><Events /></PrivateRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+        <Route path="/reset-with-otp" element={<PublicRoute><ResetWithOTP /></PublicRoute>} />
       </Routes>
       <Footer />
     </>
