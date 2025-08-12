@@ -1,16 +1,12 @@
-// Assumption: average time per place = 1 hour
 export function generateItinerary(places, hours) {
   if (!places?.length || !hours) return [];
-
-  // Sort by rating and reviews
   const sorted = [...places].sort(
-    (a, b) =>
-      (b.rating ?? 0) * (b.userRatingsTotal ?? 0) -
-      (a.rating ?? 0) * (a.userRatingsTotal ?? 0)
+    (a, b) => (b.rating ?? 0) * (b.userRatingsTotal ?? 0) - (a.rating ?? 0) * (a.userRatingsTotal ?? 0)
   );
-
-  // Select top N places based on time
-  const itinerary = sorted.slice(0, hours);
-
-  return itinerary;
+  return sorted.slice(0, Math.max(1, Math.min(sorted.length, Math.round(hours))));
 }
+
+/* === src/constants/text.js === */
+export const HERO_TITLE = "TimeTrekker";
+export const HERO_SUB = "Smart, personalized travel itineraries for any stopover or short trip.";
+export const CTA_TEXT = "Start Free Now";

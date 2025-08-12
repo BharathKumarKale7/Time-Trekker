@@ -1,6 +1,7 @@
-body {
-  background-color: #041b32;
-  font-family: 'Segoe UI', sans-serif;
+:root {
+  --brand-yellow: #f0ad4e;
+  --bg-dark: #041b32;
+  --muted: #6c757d;
 }
 
 .hero {

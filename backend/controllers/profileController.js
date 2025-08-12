@@ -1,8 +1,8 @@
-import path from "path";
-import fs from "fs";
-import User from "../models/User.js";
+import path from "path"; // For working with file paths
+import fs from "fs"; // For file system operations
+import User from "../models/userModel.js"; // User model
 
-// Get profile
+// Get profile of authenticated user
 export const getProfile = async (req, res, next) => {
   try {
     const userId = req.user;
@@ -18,12 +18,12 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-// Update profile (non-image fields)
+// Update profile (only provided non-image fields)
 export const updateProfile = async (req, res, next) => {
   try {
     const userId = req.user;
 
-    // Only update fields that are actually provided
+    // Collect only provided fields
     const updateData = {};
     if (req.body.name !== undefined) updateData.name = req.body.name;
     if (req.body.email !== undefined) updateData.email = req.body.email;
@@ -35,6 +35,7 @@ export const updateProfile = async (req, res, next) => {
     if (req.body.profileImage !== undefined) updateData.profileImage = req.body.profileImage;
     if (req.body.coverImage !== undefined) updateData.coverImage = req.body.coverImage;
 
+    // Update user
     const updated = await User.findByIdAndUpdate(
       userId,
       updateData,
@@ -53,6 +54,7 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
+// Delete old image from local storage if it exists
 const deleteOldImageIfLocal = (imageUrl, req) => {
   if (
     imageUrl &&
@@ -69,6 +71,7 @@ const deleteOldImageIfLocal = (imageUrl, req) => {
   }
 };
 
+// Upload and update user profile/cover images
 export const uploadUserImages = async (req, res, next) => {
   try {
     const user = await User.findById(req.user);
@@ -76,12 +79,14 @@ export const uploadUserImages = async (req, res, next) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
+    // Handle profile image upload
     if (req.files.profileImage && req.files.profileImage[0]) {
       const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.files.profileImage[0].filename}`;
       deleteOldImageIfLocal(user.profileImage, req);
       user.profileImage = fileUrl;
     }
 
+    // Handle cover image upload
     if (req.files.coverImage && req.files.coverImage[0]) {
       const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.files.coverImage[0].filename}`;
       deleteOldImageIfLocal(user.coverImage, req);
@@ -90,6 +95,7 @@ export const uploadUserImages = async (req, res, next) => {
 
     await user.save();
 
+    // Fetch updated user info
     const updatedUser = await User.findById(req.user).select("-password");
 
     res.json({

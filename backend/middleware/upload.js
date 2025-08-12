@@ -1,13 +1,14 @@
-// upload.js
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+import multer from "multer"; // Middleware for handling file uploads
+import path from "path"; // For working with file paths
+import fs from "fs"; // For file system operations
 
+// Ensure 'uploads' directory exists
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
+// Configure file storage location and naming
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -17,6 +18,7 @@ const storage = multer.diskStorage({
   }
 });
 
+// Configure upload settings with file type filter
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -30,4 +32,4 @@ const upload = multer({
   }
 });
 
-export default upload;
+export default upload; // Export configured multer instance

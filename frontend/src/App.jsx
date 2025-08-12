@@ -6,9 +6,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Explore from "./pages/Explore";
-import Homepage from "./components/Home";
+import Homepage from "./pages/Home";
 import Profile from "./pages/Profile";
 import Events from './pages/Events';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 
@@ -25,7 +27,8 @@ function App() {
         <Route path="/explore" element={<PrivateRoute><Explore /></PrivateRoute>} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/events" element={<PrivateRoute><Events /></PrivateRoute>} />
-
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
       </Routes>
       <Footer />
     </>

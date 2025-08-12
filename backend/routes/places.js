@@ -1,18 +1,19 @@
-import express from "express";
-import axios from "axios";
-import rateLimit from "express-rate-limit";
+import express from "express"; // Web framework
+import axios from "axios"; // HTTP client
+import rateLimit from "express-rate-limit"; // Rate limiting middleware
 
 const router = express.Router();
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
+// Rate limiter for external API calls (max 10 requests per 15 minutes)
 const externalApiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10,
   message: { msg: "Too many requests. Please try again later." },
 });
 
-// ✅ 1. City-based place search
+// 1. City-based place search using Google Places Text Search API
 router.get("/:city", externalApiLimiter, async (req, res) => {
   const city = req.params.city;
   const keyword = req.query.keyword || "tourist attractions";
@@ -28,6 +29,7 @@ router.get("/:city", externalApiLimiter, async (req, res) => {
       }
     );
 
+    // Format and return places
     const places = response.data.results.map((place) => ({
       name: place.name,
       address: place.formatted_address,
@@ -46,7 +48,7 @@ router.get("/:city", externalApiLimiter, async (req, res) => {
   }
 });
 
-// ✅ 2. Location & time-based nearby recommendation
+// 2. Location & time-based nearby tourist attraction recommendations
 router.get("/recommend", externalApiLimiter, async (req, res) => {
   const { lat, lng, hours } = req.query;
 
@@ -55,6 +57,7 @@ router.get("/recommend", externalApiLimiter, async (req, res) => {
   }
 
   try {
+    // Fetch nearby tourist attractions within 8 km radius
     const nearbyRes = await axios.get(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json",
       {
@@ -69,10 +72,12 @@ router.get("/recommend", externalApiLimiter, async (req, res) => {
 
     const places = nearbyRes.data.results.slice(0, 20);
 
+    // Prepare destinations string for Distance Matrix API
     const destinations = places
       .map((p) => `${p.geometry.location.lat},${p.geometry.location.lng}`)
       .join("|");
 
+    // Get travel durations from current location to each place
     const distanceRes = await axios.get(
       "https://maps.googleapis.com/maps/api/distancematrix/json",
       {
@@ -86,13 +91,15 @@ router.get("/recommend", externalApiLimiter, async (req, res) => {
 
     const durations = distanceRes.data.rows[0].elements;
     const maxTimeMinutes = Number(hours) * 60;
+    const visitDurationSec = 45 * 60; // 45 minutes per attraction
 
+    // Filter places based on total travel + visit time within user available time
     const recommended = places.filter((place, i) => {
-      const travel = durations[i].duration?.value || 0; // in seconds
-      const visit = 45 * 60; // default 45 min per attraction
-      return (travel + visit) / 60 <= maxTimeMinutes;
+      const travelSec = durations[i].duration?.value || 0;
+      return (travelSec + visitDurationSec) / 60 <= maxTimeMinutes;
     });
 
+    // Format recommended places with travel time info
     const results = recommended.map((place, i) => ({
       name: place.name,
       address: place.vicinity,

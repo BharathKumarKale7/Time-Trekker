@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { isLoggedIn, logout, getUsername } from "../utils/auth";
+import { getUsername, isLoggedIn, logout } from "../utils/auth";
 import authEvent from "../utils/authEvent";
 import { motion } from "framer-motion";
 
-function Navbar() {
+export default function Navbar() {
   const [auth, setAuth] = useState(isLoggedIn());
   const [username, setUsername] = useState(getUsername());
   const navigate = useNavigate();
@@ -13,89 +13,47 @@ function Navbar() {
   const navbarRef = useRef(null);
 
   useEffect(() => {
-    const updateAuth = () => {
-      setAuth(isLoggedIn());
-      setUsername(getUsername());
-    };
-    authEvent.subscribe(updateAuth);
-    return () => authEvent.unsubscribe(updateAuth);
+    const update = () => { setAuth(isLoggedIn()); setUsername(getUsername()); };
+    authEvent.subscribe(update);
+    return () => authEvent.unsubscribe(update);
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handler = (e) => {
       const navbarCollapse = document.getElementById("navbarNav");
       const toggler = document.querySelector(".navbar-toggler");
       const isExpanded = toggler?.getAttribute("aria-expanded") === "true";
-
-      if (
-        isExpanded &&
-        navbarCollapse &&
-        !navbarCollapse.contains(event.target) &&
-        !toggler?.contains(event.target)
-      ) {
-        toggler?.click(); // collapse navbar
-      }
+      if (isExpanded && navbarCollapse && !navbarCollapse.contains(e.target) && !toggler?.contains(e.target)) toggler?.click();
     };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    authEvent.emit();
-    logout();
-    collapseNavbar();
-    navigate("/login");
-  };
-
+  const handleLogout = () => { logout(); navigate('/login'); };
   const isActive = (path) => location.pathname === path;
 
   const collapseNavbar = () => {
     const navbarCollapse = document.getElementById("navbarNav");
-    const toggler = document.querySelector(".navbar-toggler");
-    if (navbarCollapse?.classList.contains("show")) {
-      toggler?.click();
+    if (navbarCollapse) {
+      const toggler = document.querySelector(".navbar-toggler");
+      if (toggler && toggler.getAttribute("aria-expanded") === "true") toggler.click();
     }
-  };
-
+  }
+  
   return (
     <motion.nav
       className="navbar navbar-expand-lg bg-white shadow-sm fixed-top px-4"
-      initial={{ y: -60, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      style={{
-        backdropFilter: "blur(6px)",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        borderBottom: "1px solid #ddd",
-        zIndex: 1040,
-      }}
+      initial={{ y: -60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.45 }}
+      style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(255,255,255,0.95)", borderBottom: "1px solid #eee", zIndex: 1040 }}
       ref={navbarRef}
     >
       <div className="container-fluid">
-        <Link to={auth ? "/dashboard" : "/"} className="navbar-brand fw-bold text-dark" onClick={collapseNavbar}>
-          <i
-            className="bi bi-globe-central-south-asia-fill me-2"
-            style={{
-              left: "1rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#f0ad4e",
-            }}
-          />
-          Time<span style={{ color: "#f0ad4e" }}>Trekker</span>
+        <Link to={auth ? "/dashboard" : "/"} className="navbar-brand fw-bold text-dark">
+          <i className="bi bi-globe-central-south-asia-fill me-2" style={{ color: "var(--brand-yellow)" }} />
+          Time<span style={{ color: "var(--brand-yellow)" }}>Trekker</span>
         </Link>
 
-        <button
-          className="navbar-toggler border-0"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />
         </button>
 
@@ -103,73 +61,16 @@ function Navbar() {
           <ul className="navbar-nav align-items-center">
             {auth ? (
               <>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/profile") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/profile"
-                    onClick={collapseNavbar}
-                  >
-                    <i className="bi bi-person-circle me-2" />
-                    <span className="fw-semibold">{username}</span>
-                  </Link>
-                </li>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/dashboard") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/dashboard"
-                    onClick={collapseNavbar}
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/explore") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/explore"
-                    onClick={collapseNavbar}
-                  >
-                    Explore
-                  </Link>
-                </li>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/events") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/events"
-                    onClick={collapseNavbar}
-                  >
-                    Events
-                  </Link>
-                </li>
-                <li className="nav-item mx-2">
-                  <motion.button
-                    onClick={handleLogout}
-                    className="nav-link fw-semibold text-dark bg-transparent border-0"
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Logout
-                  </motion.button>
-                </li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/profile') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/profile" onClick={collapseNavbar}> <i className="bi bi-person-circle me-2"/> {username}</Link></li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/dashboard') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/dashboard" onClick={collapseNavbar}>Dashboard</Link></li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/explore') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/explore" onClick={collapseNavbar}>Explore</Link></li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/events') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/events" onClick={collapseNavbar}>Events</Link></li>
+                <li className="nav-item mx-2"><button onClick={handleLogout} className="nav-link btn btn-link text-dark">Logout</button></li>
               </>
             ) : (
               <>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/login") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/login"
-                    onClick={collapseNavbar}
-                  >
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item mx-2">
-                  <Link
-                    className={`nav-link ${isActive("/signup") ? "fw-semibold text-warning" : "text-dark"}`}
-                    to="/signup"
-                    onClick={collapseNavbar}
-                  >
-                    Signup
-                  </Link>
-                </li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/login') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/login" onClick={collapseNavbar}>Login</Link></li>
+                <li className="nav-item mx-2"><Link className={`nav-link ${isActive('/signup') ? 'fw-semibold text-warning' : 'text-dark'}`} to="/signup" onClick={collapseNavbar}>Signup</Link></li>
               </>
             )}
           </ul>
@@ -178,5 +79,3 @@ function Navbar() {
     </motion.nav>
   );
 }
-
-export default Navbar;

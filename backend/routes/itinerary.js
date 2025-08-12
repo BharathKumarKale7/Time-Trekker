@@ -1,12 +1,14 @@
-import express from "express";
-import auth from "../middleware/auth.js";
-import Itinerary from "../models/Itinerary.js";
-import { validateItinerary } from "../validators/itineraryValidator.js";
-import { validationResult } from "express-validator";
+import express from "express"; // Web framework
+import auth from "../middleware/authMiddleware.js"; // JWT authentication middleware
+import Itinerary from "../models/itineraryModel.js"; // Itinerary model
+import { validateItinerary } from "../validators/itineraryValidator.js"; // Itinerary validation rules
+import { validationResult } from "express-validator"; // For validating request data
 
 const router = express.Router();
 
+// Create new itinerary
 router.post("/", auth, validateItinerary, async (req, res, next) => {
+  // Validate request
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed");
@@ -18,6 +20,7 @@ router.post("/", auth, validateItinerary, async (req, res, next) => {
   const { city, startTime, endTime, budget, interests, places } = req.body;
 
   try {
+    // Save itinerary to database
     const itinerary = await Itinerary.create({
       user: req.user,
       city,
@@ -34,6 +37,7 @@ router.post("/", auth, validateItinerary, async (req, res, next) => {
   }
 });
 
+// Get all itineraries for authenticated user
 router.get("/", auth, async (req, res, next) => {
   try {
     const itineraries = await Itinerary.find({ user: req.user }).sort({ date: -1 });
@@ -43,6 +47,7 @@ router.get("/", auth, async (req, res, next) => {
   }
 });
 
+// Delete itinerary by ID
 router.delete("/:id", auth, async (req, res, next) => {
   try {
     const itinerary = await Itinerary.findByIdAndDelete(req.params.id);
@@ -57,4 +62,4 @@ router.delete("/:id", auth, async (req, res, next) => {
   }
 });
 
-export default router;
+export default router; // Export router
