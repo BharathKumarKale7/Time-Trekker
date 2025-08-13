@@ -6,18 +6,23 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function ForgotPassword() {
+  // State for storing email input and loading status
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Request OTP for password reset
       await api.post("/auth/request-password-otp", { email });
       toast.success("If an account exists, an OTP has been sent to your email");
+      // Redirect to reset page, passing email via state
       navigate("/reset-with-otp", { state: { email } });
     } catch (err) {
+      // Show error message from backend or generic message
       toast.error(err.response?.data?.msg || "Something went wrong");
     } finally {
       setLoading(false);
@@ -26,6 +31,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="container mt-5 pt-5 d-flex justify-content-center">
+      {/* Animated card container */}
       <motion.div
         className="card shadow-lg p-4"
         style={{ maxWidth: "450px", width: "100%" }}
@@ -33,6 +39,7 @@ export default function ForgotPassword() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* Animated heading */}
         <motion.h3
           className="text-center mb-4 fw-bold"
           initial={{ opacity: 0, y: -20 }}
@@ -42,12 +49,14 @@ export default function ForgotPassword() {
           Forgot Password
         </motion.h3>
 
+        {/* Animated form */}
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
+          {/* Email input field with animation on focus */}
           <motion.input
             type="email"
             className="form-control mb-3 shadow-sm"
@@ -59,6 +68,7 @@ export default function ForgotPassword() {
             transition={{ type: "spring", stiffness: 200 }}
           />
 
+          {/* Submit button with loading state and animations */}
           <motion.button
             type="submit"
             className="btn btn-dark w-100 py-2 fw-semibold"

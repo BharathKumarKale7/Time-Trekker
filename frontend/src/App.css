@@ -1,37 +1,41 @@
+/* Define CSS custom properties (variables) for consistent colors */
 :root {
-  --brand-yellow: #f0ad4e;
-  --bg-dark: #041b32;
-  --muted: #6c757d;
+  --brand-yellow: #f0ad4e;  /* Primary accent/yellow color */
+  --bg-dark: #041b32;       /* Dark background color */
+  --muted: #6c757d;         /* Muted/gray color */
 }
 
+/* Hero section styling */
 .hero {
-  background-image: url('src/assets/home-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100%;
+  background-image: url('src/assets/home-bg.jpg');  /* Background image for hero */
+  background-size: cover;                           /* Cover the entire container */
+  background-position: center;                      /* Center the image */
+  background-repeat: no-repeat;                     /* No repeating pattern */
+  height: 100vh;                                    /* Full viewport height */
+  width: 100%;                                      /* Full width */
   margin: 0;
   padding: 0;
 }
 
+/* Text styles inside hero to improve readability */
 .hero h1, .hero p {
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);        /* Subtle shadow for contrast */
 }
 
+/* Signup page background container */
 .signup-bg-container {
-  background-image: url('src/assets/signup-bg.jpg');
+  background-image: url('src/assets/signup-bg.jpg'); /* Signup page background image */
   background-size: cover;
-  height: 100vh;
+  height: 100vh;                                     /* Full viewport height */
   background-position: center;
   background-repeat: no-repeat;
 }
 
+/* Login page background container */
 .login-bg-container {
-  background-image: url('src/assets/login-bg.jpg');
+  background-image: url('src/assets/login-bg.jpg'); /* Login page background image */
   background-size: cover;
-  height: 100vh;
+  height: 100vh;                                    /* Full viewport height */
   background-position: center;
   background-repeat: no-repeat;
 }
-

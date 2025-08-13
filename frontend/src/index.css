@@ -1,54 +1,57 @@
-/* Reset some default browser styles */
+/* Reset some default browser styles for consistent layout */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Include padding and border in element's total width/height */
 }
 
-/* Set base font and background */
+/* Set base font styles and background color for the entire page */
 body {
-  background-color: #f9f9f9;
-  color: #333;
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; 
-  width: 100%;
+  background-color: #f9f9f9; /* Light gray background */
+  color: #333; /* Dark text color for readability */
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; /* Modern, clean font stack */
+  width: 100%; /* Ensure body takes full width */
 }
 
-/* Images are responsive by default */
+/* Make images responsive: scale down with container but keep aspect ratio */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Buttons: ensure they don't shrink on mobile */
+/* Style buttons with pointer cursor and inherit font */
 button {
   cursor: pointer;
-  font-family: inherit;
+  font-family: inherit; /* Match surrounding text font */
 }
 
-/* Forms: input spacing and style adjustments */
+/* Style form inputs, selects, and textareas for consistency */
 input, select, textarea {
   font-family: inherit;
   font-size: 1rem;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 100%;
+  padding: 0.75rem; /* Comfortable inner spacing */
+  border-radius: 6px; /* Rounded corners */
+  border: 1px solid #ccc; /* Light border */
+  width: 100%; /* Full width of their container */
 }
 
-/* Anchor defaults */
+/* Remove underline from links and inherit text color */
 a {
   text-decoration: none;
   color: inherit;
 }
 
+/* Headings with medium-bold font weight */
 h1, h2, h3 {
   font-weight: 600;
 }
 
+/* Placeholder text in inputs styled lighter */
 input::placeholder {
   color: #aaa;
 }
 
+/* Disabled buttons visually muted and cursor changed */
 button:disabled {
   opacity: 0.65;
   cursor: not-allowed;

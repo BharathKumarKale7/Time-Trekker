@@ -5,11 +5,11 @@ import { getProfile, updateProfile, uploadUserImages } from "../controllers/prof
 import { validateSignup } from "../validators/authValidator.js"; // Signup validation rules
 import upload from "../middleware/upload.js"; // File upload middleware
 import { requestPasswordOTP, resetPasswordWithOTP } from "../controllers/authController.js"; // Password reset controllers
-import rateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit"; // Rate limiting middleware
 
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutes window
+  max: 100, // limit each IP to 100 requests per windowMs
 });
 
 const otpRequestLimiter = rateLimit({
