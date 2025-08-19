@@ -36,6 +36,8 @@ export default function Events() {
       <div className="row mb-4">
         <div className="col-md-8 mb-3">
           <input
+            id="city-input"
+            name="city"
             className="form-control"
             placeholder="Enter city"
             value={city}
@@ -90,7 +92,7 @@ export default function Events() {
                   </p>
                   <a
                     href={evt.url}
-                    className="btn btn-sm btn-outline-primary mt-auto"
+                    className="btn btn-sm btn-outline-dark mt-auto"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

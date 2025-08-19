@@ -7,10 +7,6 @@ import upload from "../middleware/upload.js"; // File upload middleware
 import { requestPasswordOTP, resetPasswordWithOTP } from "../controllers/authController.js"; // Password reset controllers
 import rateLimit from "express-rate-limit"; // Rate limiting middleware
 
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes window
-  max: 100, // limit each IP to 100 requests per windowMs
-});
 
 const otpRequestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
